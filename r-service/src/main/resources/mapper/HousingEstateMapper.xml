@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.reclamation.rservice.mapper.HousingEstateMapper">
+	<resultMap id="BaseResultMap" type="com.reclamation.rservice.domain.HousingEstate">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="quantity" property="quantity" jdbcType="VARCHAR" />
+		<result column="province_code" property="province_code" jdbcType="VARCHAR" />
+		<result column="city_code" property="city_code" jdbcType="VARCHAR" />
+		<result column="address" property="address" jdbcType="VARCHAR" />
+		<association property="province_name" column="{code=province_code}" select="getAreaNameByAreaCode"/>
+		<association property="city_name" column="{code=city_code}" select="getAreaNameByAreaCode"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, code, name, quantity, province_code, city_code, address
+	</sql>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from housing_estate
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from housing_estate where id = #{id,jdbcType=INTEGER}
+	</delete>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.reclamation.rservice.domain.HousingEstate">
+		insert into housing_estate
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="code != null">
+				code,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="quantity != null">
+				quantity,
+			</if>
+			<if test="province_code != null">
+				province_code,
+			</if>
+			<if test="city_code != null">
+				city_code,
+			</if>
+			<if test="address != null">
+				address,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="code != null">
+				#{code,jdbcType=VARCHAR},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="quantity != null">
+				#{quantity,jdbcType=VARCHAR},
+			</if>
+			<if test="province_code != null">
+				#{province_code,jdbcType=VARCHAR},
+			</if>
+			<if test="city_code != null">
+				#{city_code,jdbcType=VARCHAR},
+			</if>
+			<if test="address != null">
+				#{address,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKey" parameterType="com.reclamation.rservice.domain.HousingEstate">
+		update housing_estate
+		<set>
+			<if test="code != null">
+				code = #{code,jdbcType=VARCHAR},
+			</if>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="quantity != null">
+				quantity = #{quantity,jdbcType=VARCHAR},
+			</if>
+			<if test="province_code != null">
+				province_code = #{province_code,jdbcType=VARCHAR},
+			</if>
+			<if test="city_code != null">
+				city_code = #{city_code,jdbcType=VARCHAR},
+			</if>
+			<if test="address != null">
+				address = #{address,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<select id="getAreas" resultType="java.util.HashMap">
+		select * from area where parent_code = #{code}
+	</select>
+
+	<select id="getHousingEstateByCityCode" resultMap="BaseResultMap">
+		select * from housing_estate where city_code = #{cityCode}
+	</select>
+	
+	<select id="getAreaNameByAreaCode" resultType="java.lang.String">
+		select area_name from area where area_code = #{code}
+	</select>
+
+</mapper>

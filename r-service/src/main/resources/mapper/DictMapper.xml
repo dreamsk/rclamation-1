@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.reclamation.rservice.mapper.DictMapper">
+	<resultMap id="BaseResultMap" type="com.reclamation.rservice.domain.Dict">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="dict_tabname" property="dict_tabname" jdbcType="VARCHAR" />
+		<result column="dict_colname" property="dict_colname" jdbcType="VARCHAR" />
+		<result column="dict_option" property="dict_option" jdbcType="VARCHAR" />
+		<result column="dict_text" property="dict_text" jdbcType="VARCHAR" />
+		<result column="dict_name" property="dict_name" jdbcType="VARCHAR" />
+		<result column="dict_sort" property="dict_sort" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id,dict_tabname,dict_colname,dict_option,dict_text,dict_sort,dict_name
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from sys_dict
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from sys_dict where id = #{id,jdbcType=INTEGER}
+	</delete>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.reclamation.rservice.domain.Dict">
+		insert into sys_dict
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="dict_tabname != null">
+				dict_tabname,
+			</if>
+			<if test="dict_colname != null">
+				dict_colname,
+			</if>
+			<if test="dict_option != null">
+				dict_option,
+			</if>
+			<if test="dict_text != null">
+				dict_text,
+			</if>
+			<if test="dict_sort != null">
+				dict_sort,
+			</if>
+			<if test="dict_name != null">
+				dict_name,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="dict_tabname != null">
+				#{dict_tabname,jdbcType=VARCHAR},
+			</if>
+			<if test="dict_colname != null">
+				#{dict_colname,jdbcType=VARCHAR},
+			</if>
+			<if test="dict_option != null">
+				#{dict_option,jdbcType=VARCHAR},
+			</if>
+			<if test="dict_text != null">
+				#{dict_text,jdbcType=VARCHAR},
+			</if>
+			<if test="dict_sort != null">
+				#{dict_sort,jdbcType=INTEGER},
+			</if>
+			<if test="dict_name != null">
+				#{dict_name,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKey" parameterType="com.reclamation.rservice.domain.Dict">
+		update sys_dict
+		<set>
+			<if test="dict_tabname != null">
+				dict_tabname = #{dict_tabname,jdbcType=VARCHAR},
+			</if>
+			<if test="dict_colname != null">
+				dict_colname = #{dict_colname,jdbcType=VARCHAR},
+			</if>
+			<if test="dict_option != null">
+				dict_option = #{dict_option,jdbcType=VARCHAR},
+			</if>
+			<if test="dict_text != null">
+				dict_text = #{dict_text,jdbcType=VARCHAR},
+			</if>
+			<if test="dict_sort != null">
+				dict_sort = #{dict_sort,jdbcType=INTEGER},
+			</if>
+			<if test="dict_name != null">
+				dict_name = #{dict_name,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+	
+</mapper>

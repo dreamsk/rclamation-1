@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.reclamation.rservice.mapper.ReclamationOrderMapper">
+	<resultMap id="BaseResultMap" type="com.reclamation.rservice.domain.ReclamationOrder">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="order_no" property="order_no" jdbcType="VARCHAR" />
+		<result column="scrap_code" property="scrap_code" jdbcType="VARCHAR" />
+		<result column="owner_id" property="owner_id" jdbcType="VARCHAR" />
+		<result column="sc_id" property="sc_id" jdbcType="VARCHAR" />
+		<result column="rd_id" property="rd_id" jdbcType="VARCHAR" />
+		<result column="amount" property="amount" jdbcType="INTEGER" />
+		<result column="unit" property="unit" jdbcType="VARCHAR" />
+		<result column="money" property="money" jdbcType="INTEGER" />
+		<result column="sc_status" property="sc_status" jdbcType="VARCHAR" />
+		<result column="rd_status" property="rd_status" jdbcType="VARCHAR" />
+		<result column="create_time" property="create_time" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="update_time" jdbcType="TIMESTAMP" />
+
+		<association property="price" column="{scrap_code=scrap_code}" select="selectScrapPriceByScrapCode" />
+		<association property="scrap_name" column="{scrap_code=scrap_code}" select="selectScrapNameByScrapCode" />
+		<association property="owner_name" column="{id=owner_id}" select="com.reclamation.rservice.mapper.OwnerMapper.selectOwnerNameById" />
+		<association property="sc_name" column="{id=sc_id}" select="com.reclamation.rservice.mapper.ScrapCollectorMapper.selectNameByPrimaryKey" />
+		<association property="sc_status_val" column="{dict_option=sc_status}" select="com.reclamation.rservice.mapper.OwnerMapper.getCategoryName" />
+		<association property="rd_status_val" column="{dict_option=rd_status}" select="com.reclamation.rservice.mapper.OwnerMapper.getCategoryName" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, order_no, scrap_code,owner_id,sc_id,rd_id,amount,unit,money,sc_status,rd_status,create_time,update_time
+	</sql>
+
+	<insert id="insert" parameterType="com.reclamation.rservice.domain.ReclamationOrder">
+		insert into reclamation_order
+		    (
+				order_no,
+				scrap_code,
+				owner_id,
+				sc_status,
+		        rd_status,
+		        create_time,
+		     	unit
+
+			) values
+			 (
+			  #{order_no},
+			  #{scrap_code},
+			  #{owner_id},
+			  #{sc_status},
+			  #{rd_status},
+			  #{create_time},
+			  #{unit}
+					 )
+	</insert>
+
+	<select id="reclamationOrderList" resultMap="BaseResultMap">
+		select ro.* from reclamation_order ro,owner o where
+			ro.owner_id = o.id and ro.sc_status != 'del' and openid = #{openid}
+	</select>
+
+	<select id="selectScrapPriceByScrapCode" resultType="java.lang.Integer">
+		select price from scrap
+		where scrap_code = #{scrap_code,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectScrapNameByScrapCode" resultType="java.lang.String">
+		select scrap_name from scrap
+		where scrap_code = #{scrap_code,jdbcType=VARCHAR}
+	</select>
+
+	<select id="scrapOrderList" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+			ro.*
+		from
+			reclamation_order ro,
+			owner ow,
+			scrap_collector sc
+		where
+			ro.owner_id = ow.id
+		  and ow.housing_estate_code = sc.housing_estate_code
+		  and ro.sc_status != 'del'
+		and sc.openid = #{openid,jdbcType=VARCHAR}
+	</select>
+
+	<update id="editOrder" parameterType="com.reclamation.rservice.domain.ReclamationOrder">
+		update reclamation_order
+		set sc_status = #{sc_status,jdbcType=VARCHAR},
+			sc_id = (SELECT id FROM scrap_collector WHERE openid = #{openid,jdbcType=VARCHAR}),
+			amount = #{amount,jdbcType=INTEGER},
+			money = #{money,jdbcType=INTEGER},
+			update_time = #{update_time,jdbcType=TIMESTAMP}
+		where order_no = #{order_no,jdbcType=VARCHAR}
+	</update>
+
+	<update id="cancelOrder" parameterType="com.reclamation.rservice.domain.ReclamationOrder">
+		update reclamation_order
+		set sc_status = #{sc_status,jdbcType=VARCHAR}
+
+		where order_no = #{order_no,jdbcType=VARCHAR}
+	</update>
+</mapper>

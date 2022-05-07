@@ -1,0 +1,25 @@
+server:
+  port: 80
+
+spring:
+  application:
+    name: r-web
+
+  mvc:
+    view:
+      prefix: /pages/
+      suffix: .jsp
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://c002:8001/eureka/
+
+service-url:
+  user-service-name: r-service
+
+
+
+
+

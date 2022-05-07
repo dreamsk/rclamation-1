@@ -1,0 +1,36 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: r-service
+  # 数据源
+  datasource:
+    url: jdbc:mysql://c002:3306/reclamation?useUnicode=true&characterEncoding=UTF-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    # 数据库连接池
+    type: com.alibaba.druid.pool.DruidDataSource
+
+eureka:
+  client:
+    # 注册到Eureka的注册中心
+    register-with-eureka: true
+    # 获取注册实例列表
+    fetch-registry: true
+    service-url:
+      # 配置注册中心地址,如果配置中心是集群的，就把所有节点的地址都写上，用“,”分隔
+      defaultZone: http://c002:8001/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    shutdown:
+      enabled: true
+
+mybatis:
+  mapper-locations: /mapper/*.xml
